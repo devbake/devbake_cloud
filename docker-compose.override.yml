@@ -1,0 +1,10 @@
+# Compose for debug mode
+version: '3.3'
+
+services:
+  backend:
+    env_file: 
+      - ./env/backend.debug.env
+    ports:
+      - 8080:8080
+    command: ["gin", "--path", "./cmd/server", "--port", "8080", "main.go"]

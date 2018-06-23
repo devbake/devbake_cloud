@@ -1,0 +1,34 @@
+@import "./buefy-customize.scss";
+
+.ql-align-center {
+  text-align: center;
+}
+.ql-align-right {
+  text-align: right;
+}
+
+h1 {
+  @extend .title.is-1;
+}
+h2 {
+  @extend .title.is-2;
+}
+h3 {
+  @extend .title.is-3;
+}
+h4 {
+  @extend .title.is-4;
+}
+h5 {
+  @extend .title.is-5;
+}
+h6 {
+  @extend .title.is-6;
+}
+
+.ql-font-serif {
+  font-family: serif, sans-serif;
+}
+.ql-font-monospace {
+  font-family: Monospace, sans-serif;
+}

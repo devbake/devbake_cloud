@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+  frontend:
+    build: ./frontend
+    image: aliceblock/frontend:latest
+    restart: always
+    volumes:
+      - type: bind
+        source: ./frontend
+        target: /app
+    ports:
+      - 3000:3000
+    command: sh -c "npm install && npm run dev"
+
+  backend:
+    build: ./backend
+    image: aliceblock/backend:latest
+    restart: always
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /go/src/github.com/aliceblock/sample
+    ports:
+      - 8080:8080
+    env_file: 
+      - ./env/backend.dev.env

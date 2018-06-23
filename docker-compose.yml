@@ -1,0 +1,73 @@
+version: '3.3'
+
+services:
+  frontend:
+    build: ./frontend
+    image: aliceblock/frontend:latest
+
+  backend:
+    build: ./backend
+    image: aliceblock/backend:latest
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /go/src/github.com/aliceblock/sample
+
+  psql:
+    image: postgres:10.4-alpine # or 9.6.9-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    # volumes:
+    #   - type: bind
+    #     source: ./pgdata
+    #     target: /var/lib/postgresql/data
+    volumes:
+      - type: bind
+        source: ./sql
+        target: /docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres-passwd
+    secrets:
+      - postgres-passwd
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8888:8080
+    environment:
+      - ADMINER_DESIGN=price
+      - ADMINER_DEFAULT_SERVER=psql
+
+  pgadmin:
+    image: fenglc/pgadmin4:2.1-python3.6-alpine
+    restart: always
+    environment:
+      - DEFAULT_USER=devbake.official@gmail.com
+      - DEFAULT_PASSWORD=admin
+  
+  openresty:
+    image: openresty/openresty:1.13.6.2-alpine
+    restart: always
+    volumes:
+      - type: bind
+        source: ./nginx/conf.d
+        target: /etc/nginx/conf.d
+      - type: bind
+        source: ./nginx/conf
+        target: /usr/local/openresty/nginx/conf
+      - type: bind
+        source: ./nginx/html
+        target: /usr/local/openresty/nginx/html
+      - type: bind
+        source: ./ssl_cert
+        target: /usr/local/openresty/nginx/ssl_cert
+    ports:
+      - 80:80
+      - 443:443
+      - 8889:8889
+
+secrets:
+  postgres-passwd:
+    file: ./postgres-passwd
